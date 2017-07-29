@@ -1,0 +1,51 @@
+<p>var fs = require(&#39;fs&#39;)
+var async = require(&#39;async&#39;)
+var mkdirp = require(&#39;mkdirp&#39;)
+var Handlebars = require(&#39;handlebars&#39;)</p>
+<p>module.exports = (args, done) =&gt; {
+    var yogaClassesSection = args.allTypes[0]
+    var retreatsSection = args.allTypes[1]
+    var appointmentsSection = args.allTypes[2]</p>
+<pre><code>    console.log(yogaClassesSection)
+    console.log(retreatsSection)
+    console.log(appointmentsSection)
+
+var cosmic = args.CosmicBucket
+var locals = {}
+
+async.series([
+    callback =&gt; {
+        fs.readFile(__dirname + &#39;/layouts/partials/menu.html&#39;, &#39;utf8&#39;, (err, data) =&gt; {
+            if (err) {
+                return console.log(err)
+            }
+            Handlebars.registerPartial(&#39;menu&#39;, data)
+            callback()
+        })
+    },
+    callback =&gt; {
+        fs.readFile(__dirname + &#39;/layouts/page.html&#39;, &#39;utf8&#39;, (err, data) =&gt; {
+            if (err) {
+                return console.log(err)
+            }
+            var template = Handlebars.compile(data)
+            locals.template = template
+            callback()
+        })
+    },
+    () =&gt; {
+        var markup = locals.template({
+            yogaClassesSection,
+            retreatsSection,
+            appointmentsSection
+        })
+        fs.writeFile(__dirname + &#39;/build-new/index.html&#39;, markup, err =&gt; {
+            if (err) {
+                return console.log(err)
+            }
+            console.log(markup)
+            done()
+        })
+    }
+])
+</code></pre><p>}</p>
