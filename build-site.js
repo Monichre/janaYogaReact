@@ -14,9 +14,9 @@ var createPage = require('./create-page.js');
 
 const config = {
   bucket: {
-  	slug: 'janamalloyyoga',
-  	read_key: 'uvt9q9H4PsGj9XFV1I9NTrIbTgWvfXcHPeHXg8GD9G5ze47q4h',
-  	write_key: 'ZkwB10pcZIRqlqzpTXTXEBp4FXNKg6fWj2wQf1czNn6u4xW2Nj'
+  	slug: 'janamalloyyogatemp',
+  	read_key: 'TthUPRfvOjzo0qolwyeLYlU3MwpEIgkrgYySUFCubudTi4aMiY',
+  	write_key: 'ZzMTVdoCkIyHx7AvWu0tBTjJnckVe5DUFzrScteY2N6q5d9Nae'
   }
 }
 
