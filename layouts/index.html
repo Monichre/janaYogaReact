@@ -119,14 +119,15 @@
 							<div class="content">
 								<div class="content">
 									<h2 class="section-title">Yoga Classes</h2>
-									{{#each CONTENT.yogaPosts}}
+									{{#each CONTENT.yogaClasses}}
 										<p>
 											<b>
-												{{title}}
+												{{fields.title}}
 											</b>
 										</p>
 										<hr style="width: 50%; margin: 10px auto; ">
-										<p>{{{content}}}</p>
+										<p>{{{fields.dateAndTime}}}, {{{fields.description}}} {{{fields.location.fields.address}}}</p>
+										
 									{{/each}}
 
 								</div>

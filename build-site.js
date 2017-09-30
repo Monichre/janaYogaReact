@@ -1,24 +1,14 @@
-var Metalsmith = require('metalsmith');
-var markdown = require('metalsmith-markdown');
-var layouts = require('metalsmith-layouts');
-var permalinks = require('metalsmith-permalinks');
-var sass = require('metalsmith-sass');
-var Cosmic = require('cosmicjs');
-var async = require('async');
-var mkdirp = require('mkdirp');
-var del = require('del');
-var mv = require('mv');
-var createPage = require('./create-page.js');
-
-
-
-const config = {
-  bucket: {
-  	slug: 'janamalloyyogatemp',
-  	read_key: 'TthUPRfvOjzo0qolwyeLYlU3MwpEIgkrgYySUFCubudTi4aMiY',
-  	write_key: 'ZzMTVdoCkIyHx7AvWu0tBTjJnckVe5DUFzrScteY2N6q5d9Nae'
-  }
-}
+const Metalsmith = require('metalsmith');
+const markdown = require('metalsmith-markdown');
+const layouts = require('metalsmith-layouts');
+const permalinks = require('metalsmith-permalinks');
+const sass = require('metalsmith-sass');
+const contentful = require('contentful')
+const async = require('async');
+const mkdirp = require('mkdirp');
+const del = require('del');
+const mv = require('mv');
+const createPage = require('./create-page.js');
 
 module.exports = () => {
     async.series([
@@ -29,56 +19,51 @@ module.exports = () => {
             })
         },
         callback => {
-            Cosmic.getBucket(config, (err, res) => {
-                const objects = res.bucket.objects
-				const yogaPosts =[]
-				const retreatPosts =[]
-				const appointments =[]
-				objects.forEach((object) => {
-					if(object.type_slug === 'yoga-classes'){
-						yogaPosts.push(object)
-					} else if (object.type_slug === 'retreats'){
-						retreatPosts.push(object)
-					}else if (object.type_slug === 'appointments'){
-						appointments.push(object)
-					}else {}
-				})
-				const CONTENT = {
-					yogaPosts: yogaPosts,
-					retreatPosts: retreatPosts,
-					appointments: appointments
-				}
-                async.eachSeries(CONTENT, (type, callbackEach) => {
-                    var args = {
-                        content: CONTENT
-                    }
-                    createPage(args, callbackEach)
-                }, () => {
-
-
-                    Metalsmith(__dirname)
-                        .source('./src')
-                        .destination('./build-new')
-                        .clean(false)
-                        .use(sass({
-                            outputDir: 'css/',
-                            sourceMap: true,
-                            sourceMapContents: true
-                        }))
-                        .use(markdown())
-                        .use(permalinks())
-                        .use(layouts({
-                            engine: 'handlebars'
-                        }))
-                        .build((err, files) => {
-                            if (err) {
-                                throw err
-                            }
-                            callback()
-                        })
-                })
+            const cms_client = contentful.createClient({
+                space: 'ekwq88j88qpz',
+                accessToken: '1405d2901c9e548f1d504f1c0b7729c08e54a72f5bd73a63b2dc1f1816a7d2ac'
             })
-        },
+            cms_client.getEntries()
+                .then((response) => {
+                    
+                    let response_items = response.items
+                    let yogaClasses = response_items.filter(item => item.sys.contentType.sys.id === 'yogaClass')
+                    console.log(yogaClasses)
+                    const CONTENT = {
+                        yogaClasses: yogaClasses
+                        
+                    }
+                    async.eachSeries(CONTENT, (type, callbackEach) => {
+                        var args = {
+                            content: CONTENT
+                        }
+                        createPage(args, callbackEach)
+                    }, () => {
+    
+    
+                        Metalsmith(__dirname)
+                            .source('./src')
+                            .destination('./build-new')
+                            .clean(false)
+                            .use(sass({
+                                outputDir: 'css/',
+                                sourceMap: true,
+                                sourceMapContents: true
+                            }))
+                            .use(markdown())
+                            .use(permalinks())
+                            .use(layouts({
+                                engine: 'handlebars'
+                            }))
+                            .build((err, files) => {
+                                if (err) {
+                                    throw err
+                                }
+                                callback()
+                            })
+                    })
+                })
+            },
         // Delete build folder
         callback => {
             del([__dirname + '/build']).then(() => {

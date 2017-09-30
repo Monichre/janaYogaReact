@@ -5,7 +5,21 @@ var Handlebars = require('handlebars')
 
 
 module.exports = (args, done) => {
-	const CONTENT = args.content
+    const CONTENT = args.content
+    const months = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"]
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+    
+    
+    CONTENT.yogaClasses.forEach((yogaClass) => {
+        let date_obj = new Date(yogaClass.fields.dateAndTime)
+        date_obj.getHours()
+        let classTime = months[(date_obj.getMonth() + 1)] + ' ' + date_obj.getDate() + ', ' + date_obj.getFullYear() + ' ' + date_obj.getHours() + ':' + date_obj.getMinutes()
+        
+        yogaClass.fields.dateAndTime = classTime
+        
+    });
     var locals = {}
 
     async.series([

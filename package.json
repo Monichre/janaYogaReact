@@ -4,12 +4,12 @@
   "description": "Jana Yoga Site",
   "main": "app.js",
   "dependencies": {
+    "async": "^2.1.1",
+    "contentful": "^4.6.2",
+    "cosmicjs": "^2.1.2",
+    "del": "^2.2.2",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
-	"async": "^2.1.1",
-    "cosmicjs": "^2.1.2",
-    "dotenv": "^4.0.0",
-    "del": "^2.2.2",
     "handlebars": "^4.0.5",
     "metalsmith": "^2.1.0",
     "metalsmith-layouts": "^1.4.1",
@@ -22,10 +22,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-    "scripts": {
-      "start": "node app.js"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC"
